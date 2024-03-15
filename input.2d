@@ -1,0 +1,124 @@
+#----------------------DOMAIN DEFINITION------------------------
+geometry.is_periodic = 0 1 #1           # For each dir, 0: non-perio, 1: periodic
+geometry.coord_sys   = 0               # 0 => cart, 1 => RZ
+geometry.prob_lo     = 0.0 0.0 0.0     # x_lo y_lo (z_lo)
+geometry.prob_hi     = 0.0048 0.0012 0.00015  #0.06283185307179586232 0.06283185307179586232 0.06283185307179586232     # x_hi y_hi (z_hi)
+
+# >>>>>>>>>>>>>  BC FLAGS <<<<<<<<<<<<<<<<
+# Interior, Inflow, Outflow, Symmetry,
+# SlipWallAdiab, NoSlipWallAdiab, SlipWallIsotherm, NoSlipWallIsotherm
+peleLM.lo_bc = Outflow Interior
+peleLM.hi_bc = Outflow Interior
+
+#-------------------------AMR CONTROL----------------------------
+amr.n_cell          = 512 128 16       # Level 0 number of cells in each direction   
+amr.v               = 1               # AMR verbose
+amr.max_level       = 100              # maximum level number allowed
+amr.ref_ratio       = 2 2 2 2          # refinement ratio
+amr.regrid_int      = 20  #5                # how often to regrid
+amr.n_error_buf     = 1 1 2 2          # number of buffer cells in error est
+amr.grid_eff        = 0.7              # what constitutes an efficient grid
+amr.blocking_factor = 16 #16               # block factor in grid generation (min box size)
+amr.max_grid_size   = 64               # max box size
+
+#----------------------- PROBLEM PARAMETERS---------------------
+prob.T_mean           = 950.0  
+prob.P_mean           = 101325.
+prob.input_name       = File-AI.dat
+prob.input_resolution = 512
+prob.input_nx = 512
+prob.input_ny = 128
+prob.input_nz = 16
+prob.input_binaryformat = 0
+prob.urms0            = 2.0
+
+#-------------------------PeleLM CONTROL----------------------------
+peleLM.v = 3
+peleLM.incompressible = 0 #1
+peleLM.rho = 1.17
+peleLM.mu = 0.00001
+peleLM.num_init_iter = 1 #3
+
+peleLM.sdc_iterMax = 2
+peleLM.floor_species = 0
+
+peleLM.do_temporals = 1
+peleLM.temporal_int = 10
+peleLM.do_extremas = 1
+peleLM.do_mass_balance = 1
+peleLM.do_species_balance = 1
+
+peleLM.deltaT_verbose = 30 #1
+peleLM.deltaT_iterMax = 200 #10
+peleLM.deltaT_tol = 1.e-10 #1.0e-10
+peleLM.deltaT_crashIfFailing = 0
+
+amr.check_int = 500
+amr.plot_int = 10
+amr.max_step = 1000
+#amr.restart = chk01200
+#amr.plt_per = 1e-6 
+amr.dt_shrink = 0.5 #1.0
+amr.stop_time = 5.0
+#amr.stop_time = 1.00
+amr.cfl = 0.5 #0.7
+amr.derive_plot_vars = avg_pressure mag_vort mag_vel mass_fractions mixture_fraction progress_variable diffcoeff
+
+#-----------------------DIFFUSION-----------------------
+peleLM.fixed_Le = 1  #unity_Le = 1                  # [OPT, DEF=0] Use the unity Lewis number approximation for diffusivities
+peleLM.Lewis = 0.7  #Le = 0.7                  
+
+# ------------------- INPUTS DERIVED DIAGS ------------------
+peleLM.fuel_name = H2
+peleLM.mixtureFraction.format = Cantera
+peleLM.mixtureFraction.type   = mass
+peleLM.mixtureFraction.oxidTank = O2:0.226 N2:0.745
+peleLM.mixtureFraction.fuelTank = H2:0.029 
+peleLM.progressVariable.format = Cantera
+peleLM.progressVariable.weights = OH:1.0 
+peleLM.progressVariable.coldState = OH:0.0 
+peleLM.progressVariable.hotState = OH:0.014 
+
+# --------------- INPUTS TO CHEMISTRY REACTOR ---------------
+peleLM.chem_integrator = "ReactorCvode"
+peleLM.use_typ_vals_chem = 1          # Use species/temp typical values in CVODE
+ode.rtol = 1.0e-12  #1.0e-6                     # Relative tolerance of the chemical solve
+ode.atol = 1.0e-12 #1.0e-6                     # Absolute tolerance factor applied on typical values
+cvode.solve_type = denseAJ_direct     # CVODE Linear solve type (for Newton direction) 
+cvode.max_order  = 4                  # CVODE max BDF order. 
+ode.reactor_type = 2 # CV reactor = 1 , CVH reactor = 2
+
+peleLM.verbose = 30 #3
+mac_proj.verbose = 2
+nodal_proj.verbose = 2
+
+nodal_proj.rtol = 5e-11
+mac_proj.rtol   = 5e-11
+diffusion.rtol  = 5e-11
+
+
+#--------------------REFINEMENT CONTROL------------------------
+# Refinement according to the vorticity, no field_name needed
+#amr.refinement_indicators     = magvort
+#amr.magvort.max_level         = 3
+#amr.magvort.vorticity_greater = 200 
+
+#amr.refinement_indicators = temp
+#amr.temp.max_level     = 20
+#amr.temp.value_greater = 1300
+#amr.temp.field_name    = temp
+
+#amr.refinement_indicators = gradT
+#amr.gradT.max_level = 20
+#amr.gradT.adjacent_difference_greater = 10  #1 00
+#amr.gradT.field_name = temp
+
+
+#--------------------------OMP TILE INPUTS-----------------------------
+#fabarray.mfiter_tile_size = 8 8 8
+
+#--------------------------DEBUG/REGTESTS INPUTS-----------------------------
+#amrex.regtest_reduction=1
+#amrex.fpe_trap_invalid = 1
+#amrex.fpe_trap_zero = 1
+#amrex.fpe_trap_overflow = 1
