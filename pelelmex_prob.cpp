@@ -175,7 +175,7 @@ void PeleLM::readProbParm()
     Y_HO2input[i] = data[7 + i * 10];
     Y_H2O2input[i] = data[8 + i * 10];
     Y_N2input[i] = data[9 + i * 10];
-    amrex::Print() << "i =" << i << "Tinput =" << Tinput[i] << "H =" << Y_Hinput[i] <<"H2 =" << Y_H2input[i] << "N2 =" << Y_N2input[i] << "\n";
+    //amrex::Print() << "i =" << i << "Tinput =" << Tinput[i] << "H =" << Y_Hinput[i] <<"H2 =" << Y_H2input[i] << "N2 =" << Y_N2input[i] << "\n";
   }
     
     local_prob_parm.d_Tinput = (amrex::Real*) amrex::The_Arena()->alloc(nx*ny*nz*sizeof(amrex::Real));
