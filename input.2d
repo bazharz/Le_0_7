@@ -2,7 +2,7 @@
 geometry.is_periodic = 0 1 #1           # For each dir, 0: non-perio, 1: periodic
 geometry.coord_sys   = 0               # 0 => cart, 1 => RZ
 geometry.prob_lo     = 0.0 0.0 0.0     # x_lo y_lo (z_lo)
-geometry.prob_hi     = 0.0048 0.0012 0.00015  #0.06283185307179586232 0.06283185307179586232 0.06283185307179586232     # x_hi y_hi (z_hi)
+geometry.prob_hi     = 0.12 0.012 0.000375  #0.06283185307179586232 0.06283185307179586232 0.06283185307179586232     # x_hi y_hi (z_hi)
 
 # >>>>>>>>>>>>>  BC FLAGS <<<<<<<<<<<<<<<<
 # Interior, Inflow, Outflow, Symmetry,
@@ -11,9 +11,9 @@ peleLM.lo_bc = Outflow Interior
 peleLM.hi_bc = Outflow Interior
 
 #-------------------------AMR CONTROL----------------------------
-amr.n_cell          = 512 128 16       # Level 0 number of cells in each direction   
+amr.n_cell          = 1280 128 4       # Level 0 number of cells in each direction   
 amr.v               = 1               # AMR verbose
-amr.max_level       = 100              # maximum level number allowed
+amr.max_level       = 4              # maximum level number allowed
 amr.ref_ratio       = 2 2 2 2          # refinement ratio
 amr.regrid_int      = 20  #5                # how often to regrid
 amr.n_error_buf     = 1 1 2 2          # number of buffer cells in error est
@@ -24,11 +24,11 @@ amr.max_grid_size   = 64               # max box size
 #----------------------- PROBLEM PARAMETERS---------------------
 prob.T_mean           = 950.0  
 prob.P_mean           = 101325.
-prob.input_name       = File-AI.dat
-prob.input_resolution = 512
-prob.input_nx = 512
+prob.input_name       = File-AI-Sl-10-Nx_1280.dat
+prob.input_resolution = 1280
+prob.input_nx = 1280
 prob.input_ny = 128
-prob.input_nz = 16
+prob.input_nz = 4
 prob.input_binaryformat = 0
 prob.urms0            = 2.0
 
@@ -53,10 +53,10 @@ peleLM.deltaT_iterMax = 200 #10
 peleLM.deltaT_tol = 1.e-10 #1.0e-10
 peleLM.deltaT_crashIfFailing = 0
 
-amr.check_int = 500
-amr.plot_int = 10
-amr.max_step = 1000
-#amr.restart = chk01200
+amr.check_int = 10000
+amr.plot_int = 100
+amr.max_step = 10000
+amr.restart = chk00000
 #amr.plt_per = 1e-6 
 amr.dt_shrink = 0.5 #1.0
 amr.stop_time = 5.0
@@ -65,19 +65,20 @@ amr.cfl = 0.5 #0.7
 amr.derive_plot_vars = avg_pressure mag_vort mag_vel mass_fractions mixture_fraction progress_variable diffcoeff
 
 #-----------------------DIFFUSION-----------------------
-peleLM.fixed_Le = 1  #unity_Le = 1                  # [OPT, DEF=0] Use the unity Lewis number approximation for diffusivities
-peleLM.Lewis = 0.7  #Le = 0.7                  
+#peleLM.fixed_Le = 1                    # [OPT, DEF=0] Use the unity Lewis number approximation for diffusivities
+#peleLM.Lewis = 1.0
+#peleLM.Prandtl = 0.7                   # [OPT, DEF=0.7] If unity_Le or doing LES, specifies the Prandtl number
 
 # ------------------- INPUTS DERIVED DIAGS ------------------
 peleLM.fuel_name = H2
 peleLM.mixtureFraction.format = Cantera
 peleLM.mixtureFraction.type   = mass
 peleLM.mixtureFraction.oxidTank = O2:0.226 N2:0.745
-peleLM.mixtureFraction.fuelTank = H2:0.029 
+peleLM.mixtureFraction.fuelTank = H2:0.029 #CH4:0.5
 peleLM.progressVariable.format = Cantera
-peleLM.progressVariable.weights = OH:1.0 
-peleLM.progressVariable.coldState = OH:0.0 
-peleLM.progressVariable.hotState = OH:0.014 
+peleLM.progressVariable.weights = OH:1.0 #CO:1.0 CO2:1.0
+peleLM.progressVariable.coldState = OH:0.0 #CO:0.0 CO2:0.0
+peleLM.progressVariable.hotState = OH:0.014 #CO:0.000002 CO2:0.0666
 
 # --------------- INPUTS TO CHEMISTRY REACTOR ---------------
 peleLM.chem_integrator = "ReactorCvode"
@@ -104,14 +105,14 @@ diffusion.rtol  = 5e-11
 #amr.magvort.vorticity_greater = 200 
 
 #amr.refinement_indicators = temp
-#amr.temp.max_level     = 20
+#amr.temp.max_level     = 3
 #amr.temp.value_greater = 1300
 #amr.temp.field_name    = temp
 
-#amr.refinement_indicators = gradT
-#amr.gradT.max_level = 20
-#amr.gradT.adjacent_difference_greater = 10  #1 00
-#amr.gradT.field_name = temp
+amr.refinement_indicators = gradT
+amr.gradT.max_level = 3
+amr.gradT.adjacent_difference_greater = 50
+amr.gradT.field_name = temp
 
 
 #--------------------------OMP TILE INPUTS-----------------------------

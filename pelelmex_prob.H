@@ -67,12 +67,12 @@ pelelmex_initdata(
      return;
   }
 
-  state(i,j,k,TEMP) = 300.0;  //prob_parm.d_Tinput[i + Nx * j + Nx * Ny * k];
-  amrex::Print() << "i =" << i << "j =" << j << "k =" << k << "state(i,j,k,TEMP) =" << state(i,j,k,TEMP) << "\n";
+  state(i,j,k,TEMP) = prob_parm.d_Tinput[i + Nx * j + Nx * Ny * k];
+  //amrex::Print() << "i =" << i << "j =" << j << "k =" << k << "state(i,j,k,TEMP) =" << state(i,j,k,TEMP) << "\n";
 
   amrex::Real Yt[NUM_SPECIES] = {0.0};
   amrex::Real massfrac[NUM_SPECIES] = {0.0};
-  /*Yt[H_ID] = prob_parm.d_Y_H[i + Nx * j + Nx * Ny * k];  
+  Yt[H_ID] = prob_parm.d_Y_H[i + Nx * j + Nx * Ny * k];  
   Yt[H2_ID] = prob_parm.d_Y_H2[i + Nx * j + Nx * Ny * k];
   Yt[O_ID] = prob_parm.d_Y_O[i + Nx * j + Nx * Ny * k];
   Yt[O2_ID] = prob_parm.d_Y_O2[i + Nx * j + Nx * Ny * k];
@@ -80,13 +80,13 @@ pelelmex_initdata(
   Yt[H2O_ID] = prob_parm.d_Y_H2O[i + Nx * j + Nx * Ny * k];
   Yt[HO2_ID] = prob_parm.d_Y_HO2[i + Nx * j + Nx * Ny * k];
   Yt[H2O2_ID] = prob_parm.d_Y_H2O2[i + Nx * j + Nx * Ny * k];
-  Yt[N2_ID] = prob_parm.d_Y_N2[i + Nx * j + Nx * Ny * k];*/
+  Yt[N2_ID] = prob_parm.d_Y_N2[i + Nx * j + Nx * Ny * k];
   
-  Yt[O2_ID] = 0.226;
+  /*Yt[O2_ID] = 0.226;
   Yt[N2_ID] = 0.745;
-  Yt[H2_ID] = 0.029;
-  amrex::Print() << "Size of Yt =" << sizeof(Yt) << "\n";
-  amrex::Print() << "Yt[H2] = " << Yt[H2_ID] << "\n";
+  Yt[H2_ID] = 0.029;*/
+  /*amrex::Print() << "Size of Yt =" << sizeof(Yt) << "\n";
+  amrex::Print() << "Yt[H2] = " << Yt[H2_ID] << "\n";*/
  
   auto eos = pele::physics::PhysicsType::eos();   
   eos.X2Y(Yt, massfrac);
